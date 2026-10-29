@@ -39,7 +39,7 @@ USD/KRW 일별 환율을 Firestore에 저장하고, 요약을 바탕으로 질�
 저장소를 연결하고 `render.yaml`의 Blueprint 설정을 사용합니다. 위 환경 변수를 Render 서비스에 설정하고 `ALLOWED_ORIGINS`에 Vercel 도메인을 넣습니다. `https://<render-host>/docs`에서 Swagger를 확인합니다. 무료 인스턴스는 유휴 후 첫 요청에 지연이 있을 수 있습니다.
 
 ### Vercel
-Vercel 프로젝트의 Root Directory를 `frontend`로 지정해 정적 사이트로 배포합니다. 배포 전에 `frontend/config.js`의 API 주소를 Render 서비스 URL로 바꿉니다. 배포 URL은 실제 배포 후 이 README에 기록하세요.
+Vercel 프로젝트의 Root Directory를 `frontend`로 지정해 정적 사이트로 배포합니다. 배포 전에 `frontend/config.js`의 API 주소를 Render 서비스 URL로 바꿉니다. - 프론트엔드: https://usd-krw-ai-assistant-frontend.vercel.app\n- 백엔드 API: https://usd-krw-ai-assistant.onrender.com\n- Swagger UI: https://usd-krw-ai-assistant.onrender.com/docs
 
 ## 제출 스크린샷
 배포 후 아래 화면을 캡처해 저장소 또는 제출 문서에 첨부하세요.
