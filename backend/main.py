@@ -172,7 +172,7 @@ def chat(item: ChatInput):
         )
         try:
             response = client.models.generate_content(
-                model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash"),
+                model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),
                 contents=contents,
                 config=types.GenerateContentConfig(
                     system_instruction=system,
