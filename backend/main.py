@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from firebase_admin import credentials, firestore
-from openai import OpenAI
+from google import genai
+from google.genai import types
 from pydantic import BaseModel, Field
 
 load_dotenv()
@@ -140,9 +141,9 @@ def delete_conversation(conversation_id: str):
 
 @app.post("/api/chat")
 def chat(item: ChatInput):
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise HTTPException(503, "OpenAI is not configured")
+        raise HTTPException(503, "Gemini is not configured")
     summary = data_summary()
     system = (
         "당신은 USD/KRW 환율 데이터 분석 비서입니다. 환율은 USD 1달러당 KRW입니다. "
@@ -156,14 +157,26 @@ def chat(item: ChatInput):
     messages = old.get("messages", []) if old else []
     messages += [{"role": "user", "content": item.message}]
     try:
-        response = OpenAI(api_key=api_key).chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-            messages=[{"role": "system", "content": system}, *messages],
-            max_tokens=350,
+        contents = [
+            types.Content(
+                role="user" if message.get("role") == "user" else "model",
+                parts=[types.Part(text=message["content"])],
+            )
+            for message in messages
+            if message.get("role") in {"user", "assistant"}
+            and isinstance(message.get("content"), str)
+        ]
+        response = genai.Client(api_key=api_key).models.generate_content(
+            model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash"),
+            contents=contents,
+            config=types.GenerateContentConfig(
+                system_instruction=system,
+                max_output_tokens=350,
+            ),
         )
-        answer = response.choices[0].message.content or "답변을 만들지 못했습니다."
+        answer = response.text or "답변을 만들지 못했습니다."
     except Exception as exc:
-        raise HTTPException(502, f"OpenAI request failed: {exc}") from exc
+        raise HTTPException(502, f"Gemini request failed: {exc}") from exc
     messages.append({"role": "assistant", "content": answer})
     now = datetime.now(timezone.utc).isoformat()
     conv_ref.set({"messages": messages, "updated_at": now, "created_at": old.get("created_at", now) if old else now})
