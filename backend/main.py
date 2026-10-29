@@ -166,7 +166,10 @@ def chat(item: ChatInput):
             if message.get("role") in {"user", "assistant"}
             and isinstance(message.get("content"), str)
         ]
-        client = genai.Client(api_key=api_key)
+        client = genai.Client(
+            api_key=api_key,
+            http_options=types.HttpOptions(timeout=30_000),
+        )
         try:
             response = client.models.generate_content(
                 model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash"),
