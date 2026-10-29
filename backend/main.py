@@ -166,14 +166,18 @@ def chat(item: ChatInput):
             if message.get("role") in {"user", "assistant"}
             and isinstance(message.get("content"), str)
         ]
-        response = genai.Client(api_key=api_key).models.generate_content(
-            model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash"),
-            contents=contents,
-            config=types.GenerateContentConfig(
-                system_instruction=system,
-                max_output_tokens=350,
-            ),
-        )
+        client = genai.Client(api_key=api_key)
+        try:
+            response = client.models.generate_content(
+                model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash"),
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=system,
+                    max_output_tokens=350,
+                ),
+            )
+        finally:
+            client.close()
         answer = response.text or "답변을 만들지 못했습니다."
     except Exception as exc:
         raise HTTPException(502, f"Gemini request failed: {exc}") from exc
