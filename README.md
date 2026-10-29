@@ -3,7 +3,7 @@
 USD/KRW 일별 환율을 Firestore에 저장하고, 요약을 바탕으로 질문에 답하는 개인 데이터 비서입니다. 환율은 **1 USD당 KRW**입니다. 값이 오르면 달러 강세/원화 약세, 내리면 달러 약세/원화 강세로 해석합니다.
 
 ## 기술 스택
-- Python 3.10+, FastAPI, Pydantic, Firebase Admin/Firestore, OpenAI API
+- Python 3.10+, FastAPI, Pydantic, Firebase Admin/Firestore, Gemini API
 - HTML/CSS/Vanilla JavaScript
 - Render (API), Vercel (정적 프론트엔드)
 
@@ -26,13 +26,15 @@ USD/KRW 일별 환율을 Firestore에 저장하고, 요약을 바탕으로 질�
 6. 정적 서버로 `frontend/`를 제공합니다. API 주소는 `frontend/config.js`의 `window.API_BASE_URL`에 설정합니다. 로컬에서는 기본 `http://localhost:8000`입니다.
 
 ## 환경 변수
-- `OPENAI_API_KEY`: OpenAI API 키
+- `GEMINI_API_KEY`: Gemini API 키
 - `FIREBASE_SERVICE_ACCOUNT_JSON`: Firebase 서비스 계정 JSON 문자열
 - `ALLOWED_ORIGINS`: 허용 프론트엔드 origin 목록(쉼표 구분)
-- `OPENAI_MODEL`: 선택 사항, 기본 `gpt-4o-mini`
+- `GEMINI_MODEL`: 선택 사항, 기본 `gemini-3.8-flash`
 - 프론트엔드 API 주소: `frontend/config.js`의 `window.API_BASE_URL`
 
 키 파일은 저장소에 커밋하지 마세요. `.env.example`에는 실제 비밀값을 넣지 않습니다.
+
+공식 SDK: [Google Gen AI Python SDK](https://github.com/googleapis/python-genai)
 
 ## 배포
 ### Render
